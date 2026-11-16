@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Phishing Site</h1>
+        <p id="ip-address">Loading IP address...</p>
+        <p id="location">Loading location...</p>
+    </div>
+
+    <script>
+        async function fetchIPAndLocation() {
+            try {
+                // Fetch user's IP address
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipAddressData = await ipResponse.json();
+                document.getElementById('ip-address').innerText = `Your IP Address: ${ipAddressData.ip}`;
+
+                // Fetch user's location using the IP address
+                const locationResponse = await fetch(`http://ip-api.com/json/${ipAddressData.ip}`);
+                const locationData = await locationResponse.json();
+                if (locationData.status === 'success') {
+                    document.getElementById('location').innerText = `Your Location: ${locationData.city}, ${locationData.regionName}, ${locationData.country}`;
+                } else {
+                    document.getElementById('location').innerText = 'Unable to determine your location.';
+                }
+            } catch (error) {
+                console.error('Error fetching IP or location:', error);
+                document.getElementById('ip-address').innerText = 'Failed to load IP address.';
+                document.getElementById('location').innerText = 'Failed to load location.';
+            }
+        }
+
+        fetchIPAndLocation();
+    </script>
+</body>
+</html>
